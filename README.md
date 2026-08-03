@@ -8,6 +8,7 @@ inteiramente no navegador. Astro + Tailwind v4, saída estática, pronta para o 
 
 ## Rodar
 
+
 ```bash
 npm install
 npm run dev      # http://localhost:4321

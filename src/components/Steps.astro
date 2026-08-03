@@ -1,0 +1,30 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  heading: string;
+  steps: readonly { icon: string; title: string; text: string }[];
+}
+
+const { heading, steps } = Astro.props;
+---
+
+<!--
+  O próprio verbo é o rótulo do passo. Nada de "Etapa 1 / Etapa 2": a ordem
+  visual já comunica a sequência e o número não acrescenta informação.
+-->
+<section class="wrap py-16 md:py-24">
+  <h2 class="max-w-[20ch] font-display text-3xl sm:text-4xl">{heading}</h2>
+
+  <ol class="reveal mt-10 grid gap-6 md:grid-cols-3">
+    {
+      steps.map((step) => (
+        <li class="relative border-t-2 border-brand-500 pt-6">
+          <Icon name={step.icon} class="size-8 text-brand-600" />
+          <h3 class="mt-4 font-display text-xl">{step.title}</h3>
+          <p class="mt-2 text-ink-soft">{step.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>

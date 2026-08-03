@@ -1,0 +1,109 @@
+---
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Simulador from '../components/Simulador.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+import heroFoto from '../assets/clt-operario.jpg';
+
+const comparativo = [
+  {
+    icon: 'ph:trend-down-bold',
+    title: 'Juros menores que o cheque especial',
+    text: 'O desconto em folha reduz o risco para quem empresta, e isso aparece na taxa. Cheque especial e rotativo do cartão custam várias vezes mais.',
+  },
+  {
+    icon: 'ph:arrows-clockwise-bold',
+    title: 'A dívida vai com você',
+    text: 'Trocou de emprego? O contrato continua. O saldo passa a ser cobrado por boleto até você acertar o desconto na nova empresa.',
+  },
+  {
+    icon: 'ph:lock-open-bold',
+    title: 'Garantia no FGTS, não no seu nome',
+    text: 'Parte do saldo do FGTS e da multa rescisória funciona como garantia, o que abre acesso a quem tem restrição no CPF.',
+  },
+];
+
+const steps = [
+  {
+    icon: 'ph:calculator-fill',
+    title: 'Simule',
+    text: 'Informe o salário bruto. O cálculo respeita o limite de 35% de desconto em folha.',
+  },
+  {
+    icon: 'ph:buildings-fill',
+    title: 'Confirme o vínculo',
+    text: 'A conferência do vínculo é feita pelos dados da carteira digital. Sua empresa não precisa autorizar nada.',
+  },
+  {
+    icon: 'ph:bank-fill',
+    title: 'Receba na conta',
+    text: 'Contrato assinado pelo celular e crédito liberado, normalmente em até um dia útil.',
+  },
+];
+
+const faq = [
+  {
+    q: 'Quem tem direito ao Crédito do Trabalhador?',
+    a: 'Trabalhadores com carteira assinada, incluindo domésticos, rurais e aprendizes. O vínculo ativo é conferido pelos registros do eSocial.',
+  },
+  {
+    q: 'Quanto pode ser descontado do meu salário?',
+    a: 'Até 35% do salário bruto. Se você já tem outros descontos consignados, o limite considera a soma de todos eles.',
+  },
+  {
+    q: 'O que acontece se eu for demitido?',
+    a: 'O contrato não é cancelado. Parte do saldo do FGTS e da multa rescisória pode ser usada para abater a dívida, e o restante passa a ser cobrado diretamente de você.',
+  },
+  {
+    q: 'Minha empresa fica sabendo?',
+    a: 'A empresa é informada do desconto em folha, porque é ela quem repassa o valor. Mas ela não participa da análise nem decide se o crédito é aprovado.',
+  },
+];
+---
+
+<Base
+  title="Consignado CLT e Crédito do Trabalhador"
+  description="Empréstimo consignado para quem tem carteira assinada, com desconto em folha de até 35% e simulação sem cadastro."
+>
+  <Hero
+    title="Carteira assinada vale mais do que parece"
+    subtitle="O Crédito do Trabalhador usa o desconto em folha para derrubar a taxa. Simule sem cadastro."
+    image={heroFoto}
+    imageAlt="Trabalhador de capacete vermelho sorrindo em um canteiro de obras"
+    primaryHref="#simulador"
+    primaryLabel="Simular agora"
+  />
+
+  <!-- Cartões com pesos diferentes: o primeiro ocupa a linha inteira -->
+  <section class="wrap py-16 md:py-24">
+    <h2 class="max-w-[22ch] font-display text-3xl sm:text-4xl">
+      Por que ele custa menos que as outras opções
+    </h2>
+
+    <div class="reveal mt-10 grid gap-5 md:grid-cols-2">
+      {
+        comparativo.map((item, i) => (
+          <article class:list={['card p-7', i === 0 && 'md:col-span-2 md:flex md:items-start md:gap-8']}>
+            <Icon name={item.icon} class="size-8 shrink-0 text-brand-600" />
+            <div class:list={[i === 0 ? 'md:mt-0' : 'mt-4']}>
+              <h3 class="font-display text-xl">{item.title}</h3>
+              <p class="mt-2 max-w-[58ch] text-ink-soft">{item.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <Simulador heading="Simule com o seu salário bruto" />
+
+  <Steps heading="Como sai do papel" steps={steps} />
+
+  <Faq items={faq} heading="Dúvidas sobre o consignado CLT" />
+
+  <CtaBand />
+</Base>

@@ -1,0 +1,107 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import { rates } from '../config/site';
+import fgtsFoto from '../assets/fgts-trabalhadora.jpg';
+
+const pct = (n: number) => `${(n * 100).toFixed(2).replace('.', ',')}%`;
+---
+
+<!--
+  Bento de 5 células para 5 produtos: nenhuma célula vazia, nenhuma fileira de
+  cards idênticos. A variação de fundo (laranja sólido, foto, branco) é o que
+  impede a seção de virar um bloco cinza de texto.
+-->
+<section class="wrap py-16 md:py-24">
+  <h2 class="max-w-[18ch] font-display text-3xl sm:text-4xl">
+    Cinco formas de usar o que já é seu
+  </h2>
+
+  <div class="reveal mt-10 grid grid-cols-12 gap-4">
+    <!-- Destaque: INSS -->
+    <article class="col-span-12 flex flex-col justify-between rounded-2xl bg-brand-600 p-7 text-white lg:col-span-7 lg:row-span-2 lg:p-9">
+      <div>
+        <Icon name="ph:shield-check-fill" class="size-9" />
+        <h3 class="mt-5 font-display text-2xl lg:text-3xl">{rates.inss.label}</h3>
+        <!--
+          Sobre o brand-600 o texto é branco puro. Branco a 90% cai para 4,48:1
+          e a 80% para 3,85:1, ambos abaixo do mínimo AA de 4,5:1. A hierarquia
+          aqui vem de corpo e peso, não de opacidade.
+        -->
+        <p class="mt-3 max-w-[38ch] text-white">
+          Para quem recebe aposentadoria ou pensão. A parcela sai direto do benefício, então a taxa é
+          menor que a de um empréstimo comum.
+        </p>
+      </div>
+      <div class="mt-8">
+        <p class="text-sm text-white">Taxa a partir de</p>
+        <p class="font-display text-5xl lg:text-6xl" data-tabular>{pct(rates.inss.monthlyRate)}</p>
+        <p class="text-sm text-white">ao mês</p>
+        <a href="/consignado-inss" class="btn btn-on-brand mt-6">Ver condições</a>
+      </div>
+    </article>
+
+    <!-- CLT -->
+    <article class="card col-span-12 p-7 sm:col-span-6 lg:col-span-5">
+      <Icon name="ph:briefcase-fill" class="size-8 text-brand-500" />
+      <h3 class="mt-4 font-display text-xl">{rates.clt.label}</h3>
+      <p class="mt-2 text-ink-soft">
+        Carteira assinada dá acesso ao Crédito do Trabalhador, com desconto em folha.
+      </p>
+      <a href="/consignado-clt" class="mt-5 inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:text-brand-700">
+        Ver condições
+        <Icon name="ph:arrow-right-bold" class="size-4" />
+      </a>
+    </article>
+
+    <!-- FGTS com foto: variação visual obrigatória no bento -->
+    <article class="relative col-span-12 min-h-64 overflow-hidden rounded-2xl sm:col-span-6 lg:col-span-5">
+      <Image
+        src={fgtsFoto}
+        alt=""
+        aria-hidden="true"
+        widths={[420, 720]}
+        sizes="(min-width: 1024px) 32vw, 100vw"
+        loading="lazy"
+        class="absolute inset-0 size-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/60 to-ink/20"></div>
+      <div class="relative flex h-full flex-col justify-end p-7 text-white">
+        <h3 class="font-display text-xl">{rates.fgts.label}</h3>
+        <p class="mt-2 text-white/90">
+          Receba hoje até {rates.fgts.maxYears} saques-aniversário do seu FGTS.
+        </p>
+        <a href="/antecipacao-fgts" class="mt-5 inline-flex items-center gap-1.5 font-semibold text-white underline underline-offset-4">
+          Ver condições
+          <Icon name="ph:arrow-right-bold" class="size-4" />
+        </a>
+      </div>
+    </article>
+
+    <!-- Cartão benefício -->
+    <article class="card col-span-12 p-7 sm:col-span-6 lg:col-span-6">
+      <Icon name="ph:credit-card-fill" class="size-8 text-brand-500" />
+      <h3 class="mt-4 font-display text-xl">Cartão benefício</h3>
+      <p class="mt-2 text-ink-soft">
+        Usa a margem de 5% reservada ao cartão, separada da margem de empréstimo.
+      </p>
+      <a href="/consignado-inss" class="mt-5 inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:text-brand-700">
+        Ver condições
+        <Icon name="ph:arrow-right-bold" class="size-4" />
+      </a>
+    </article>
+
+    <!-- Portabilidade -->
+    <article class="card col-span-12 bg-brand-50 p-7 sm:col-span-6 lg:col-span-6">
+      <Icon name="ph:arrows-left-right-bold" class="size-8 text-brand-600" />
+      <h3 class="mt-4 font-display text-xl">Portabilidade</h3>
+      <p class="mt-2 text-ink-soft">
+        Já tem consignado em outro banco? Traga o contrato e reduza a parcela.
+      </p>
+      <a href="/simulador" class="mt-5 inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:text-brand-700">
+        Simular agora
+        <Icon name="ph:arrow-right-bold" class="size-4" />
+      </a>
+    </article>
+  </div>
+</section>

@@ -1,0 +1,59 @@
+---
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import Simulador from '../components/Simulador.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+const faq = [
+  {
+    q: 'De onde vem o número que aparece na tela?',
+    a: 'Do cálculo da Tabela Price, o mesmo método usado no contrato: a parcela é fixa e cada uma delas paga juros sobre o saldo devedor daquele mês. Nada é enviado para um servidor, a conta acontece no seu navegador.',
+  },
+  {
+    q: 'Por que o valor liberado é menor que a soma das parcelas?',
+    a: 'Porque a diferença é o juro. Se você paga R$ 300 por 48 meses, desembolsa R$ 14.400, mas recebe hoje um valor menor, que é justamente quanto esse fluxo vale no presente.',
+  },
+  {
+    q: 'A simulação vale como proposta?',
+    a: 'Não. É uma estimativa informativa. O valor definitivo depende de análise, do CET da operação e das condições da instituição financeira que concede o crédito.',
+  },
+];
+---
+
+<Base
+  title="Simulador de crédito consignado e FGTS"
+  description="Calcule parcela, valor liberado e custo total do consignado INSS, consignado CLT ou antecipação do FGTS. Sem cadastro."
+>
+  <section class="border-b border-line">
+    <div class="wrap py-12 md:py-16">
+      <h1 class="max-w-[20ch] font-display text-[2.25rem] leading-[1.08] sm:text-5xl">
+        Faça a conta antes de falar com alguém
+      </h1>
+      <p class="mt-5 max-w-[46ch] text-lg text-ink-soft sm:text-xl">
+        Três produtos, o mesmo cálculo que aparece no contrato. Nenhum dado sai do seu navegador.
+      </p>
+
+      <ul class="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-[0.9375rem] font-medium">
+        <li class="flex items-center gap-2">
+          <Icon name="ph:lock-key-fill" class="size-5 text-brand-600" />
+          Sem CPF e sem cadastro
+        </li>
+        <li class="flex items-center gap-2">
+          <Icon name="ph:cpu-fill" class="size-5 text-brand-600" />
+          Calculado no seu aparelho
+        </li>
+        <li class="flex items-center gap-2">
+          <Icon name="ph:eye-fill" class="size-5 text-brand-600" />
+          Custo total sempre visível
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <Simulador heading="Escolha a sua situação e ajuste os valores" />
+
+  <Faq items={faq} heading="Como a conta é feita" />
+
+  <CtaBand />
+</Base>

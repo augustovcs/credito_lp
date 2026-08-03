@@ -1,0 +1,48 @@
+---
+import { Icon } from 'astro-icon/components';
+
+const itens = [
+  {
+    icon: 'ph:calculator-fill',
+    title: 'A parcela aparece antes do cadastro',
+    text: 'Você vê valor, prazo e custo total sem informar CPF, telefone ou qualquer dado pessoal.',
+  },
+  {
+    icon: 'ph:user-check-fill',
+    title: 'Nome sujo não elimina você',
+    text: 'No consignado a parcela sai da folha ou do benefício, então a análise não depende do seu score.',
+  },
+  {
+    icon: 'ph:phone-disconnect-fill',
+    title: 'Sem ligação insistente',
+    text: 'A conversa começa quando você abre o WhatsApp. Não repassamos seu contato para parceiros.',
+  },
+  {
+    icon: 'ph:receipt-fill',
+    title: 'CET no contrato, em português',
+    text: 'O custo efetivo total vem escrito antes da assinatura, junto com o número de parcelas.',
+  },
+];
+---
+
+<!--
+  Lista com hairline em vez de cards. Quatro caixas iguais lado a lado seriam
+  o padrão previsível; aqui o espaço e a régua já separam os itens.
+-->
+<section class="wrap py-16 md:py-24">
+  <h2 class="max-w-[22ch] font-display text-3xl sm:text-4xl">
+    O que muda quando está tudo escrito
+  </h2>
+
+  <ul class="reveal mt-10 divide-y divide-line border-y border-line">
+    {
+      itens.map((item) => (
+        <li class="grid gap-4 py-7 sm:grid-cols-[auto_1fr_1.3fr] sm:items-baseline sm:gap-8">
+          <Icon name={item.icon} class="size-8 shrink-0 text-brand-500 sm:translate-y-1" />
+          <h3 class="font-display text-xl">{item.title}</h3>
+          <p class="max-w-[52ch] text-ink-soft">{item.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

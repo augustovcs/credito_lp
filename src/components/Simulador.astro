@@ -1,0 +1,331 @@
+---
+import { Icon } from 'astro-icon/components';
+import { rates, contact } from '../config/site';
+
+interface Props {
+  /** Título da seção. O simulador aparece na home e na página dedicada. */
+  heading?: string;
+  id?: string;
+}
+
+const { heading = 'Veja a parcela antes de decidir', id = 'simulador' } = Astro.props;
+
+/** Tudo que o script do browser precisa saber, vindo do config e não duplicado aqui. */
+const cfg = {
+  inss: {
+    rate: rates.inss.monthlyRate,
+    margin: rates.inss.marginPct,
+    months: [12, 24, 36, 48, 60, 72, 84],
+    label: 'Valor do seu benefício mensal',
+    hint: `A margem para empréstimo é de ${rates.inss.marginPct * 100}% do benefício.`,
+  },
+  clt: {
+    rate: rates.clt.monthlyRate,
+    margin: rates.clt.marginPct,
+    months: [12, 24, 36, 48, 60],
+    label: 'Valor do seu salário bruto',
+    hint: `A margem do Crédito do Trabalhador é de até ${rates.clt.marginPct * 100}% do salário.`,
+  },
+  fgts: {
+    rate: rates.fgts.monthlyRate,
+    years: [1, 2, 3, 4, 5],
+    label: 'Saldo atual do seu FGTS',
+    hint: 'Calculado pela tabela oficial do saque-aniversário.',
+  },
+};
+
+const tabs = [
+  { value: 'inss', label: 'INSS' },
+  { value: 'clt', label: 'CLT' },
+  { value: 'fgts', label: 'FGTS' },
+];
+
+const whatsappBase = `https://wa.me/${contact.whatsapp}`;
+---
+
+<section id={id} class="scroll-mt-20 bg-surface-alt py-16 md:py-24">
+  <div class="wrap">
+    <h2 class="max-w-[20ch] font-display text-3xl sm:text-4xl">{heading}</h2>
+    <p class="mt-4 max-w-[52ch] text-lg text-ink-soft">
+      A conta roda no seu próprio navegador. Nada é enviado enquanto você não quiser.
+    </p>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_0.85fr]">
+      <!-- Entrada -->
+      <div class="card p-6 md:p-8">
+        <form id="sim-form" novalidate>
+          <fieldset>
+            <legend class="field-label">Qual é a sua situação?</legend>
+            <div class="tabs mt-1 flex flex-wrap gap-2">
+              {
+                tabs.map((tab, i) => (
+                  <>
+                    <input
+                      type="radio"
+                      name="produto"
+                      id={`prod-${tab.value}`}
+                      value={tab.value}
+                      checked={i === 0}
+                      class="sr-only"
+                    />
+                    <label for={`prod-${tab.value}`} class="tab">
+                      {tab.label}
+                    </label>
+                  </>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <div class="mt-7">
+            <label class="field-label" for="sim-valor" id="sim-valor-label">
+              {cfg.inss.label}
+            </label>
+            <div class="relative">
+              <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-soft">R$</span>
+              <input
+                type="number"
+                id="sim-valor"
+                name="valor"
+                class="field-input !pl-11"
+                value="2000"
+                min="100"
+                max="1000000"
+                step="1"
+                inputmode="numeric"
+                required
+                aria-describedby="sim-valor-hint"
+              />
+            </div>
+            <p id="sim-valor-hint" class="mt-2 text-sm text-ink-soft">{cfg.inss.hint}</p>
+          </div>
+
+          <div class="mt-6">
+            <label class="field-label" for="sim-prazo" id="sim-prazo-label">Em quantas parcelas</label>
+            <select id="sim-prazo" name="prazo" class="field-input"></select>
+          </div>
+        </form>
+      </div>
+
+      <!-- Resultado -->
+      <div class="card flex flex-col bg-ink p-6 text-white md:p-8">
+        <div id="sim-resultado" aria-live="polite" class="flex-1">
+          <p class="text-sm text-white/70" id="sim-destaque-label">Você pode receber hoje</p>
+          <p class="font-display text-4xl md:text-5xl" data-tabular id="sim-destaque">R$ 0,00</p>
+
+          <dl class="mt-7 space-y-3 border-t border-white/15 pt-6 text-[0.9375rem]">
+            <div class="flex justify-between gap-4">
+              <dt class="text-white/70" id="sim-l1">Parcela mensal</dt>
+              <dd data-tabular id="sim-v1">R$ 0,00</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-white/70" id="sim-l2">Total a pagar</dt>
+              <dd data-tabular id="sim-v2">R$ 0,00</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-white/70" id="sim-l3">Custo do crédito</dt>
+              <dd data-tabular id="sim-v3">R$ 0,00</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-white/70">Taxa de juros</dt>
+              <dd data-tabular id="sim-v4">0% a.m.</dd>
+            </div>
+          </dl>
+
+          <p id="sim-erro" class="mt-6 hidden rounded-xl bg-white/10 p-4 text-sm" role="alert"></p>
+        </div>
+
+        <a id="sim-cta" href={whatsappBase} class="btn btn-on-brand mt-8 w-full">
+          <Icon name="ph:whatsapp-logo-fill" class="size-5" />
+          Falar no WhatsApp
+        </a>
+
+        <p class="mt-4 text-xs leading-relaxed text-white/60">
+          Simulação ilustrativa, calculada no seu navegador. Não é proposta de crédito nem garantia de
+          aprovação. Valores finais dependem de análise e do CET informado na contratação.
+        </p>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="mt-6 rounded-2xl border border-line bg-surface p-5 text-ink-soft">
+        O simulador precisa de JavaScript para calcular. Você pode falar direto com a gente pelo
+        <a href={whatsappBase} class="font-semibold text-brand-600 underline">WhatsApp</a>.
+      </p>
+    </noscript>
+  </div>
+</section>
+
+<style>
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding-inline: 1.25rem;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--color-line);
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background-color 160ms ease-out,
+      border-color 160ms ease-out,
+      color 160ms ease-out;
+  }
+
+  .tab:hover {
+    border-color: var(--color-brand-500);
+  }
+
+  /* Estado ativo sem uma linha de JS: o radio irmão controla o rótulo. */
+  input[name='produto']:checked + .tab {
+    background-color: var(--color-brand-600);
+    border-color: var(--color-brand-600);
+    color: #fff;
+  }
+
+  /* O radio é sr-only, então o anel de foco precisa aparecer no rótulo. */
+  input[name='produto']:focus-visible + .tab {
+    outline: 3px solid var(--color-brand-600);
+    outline-offset: 3px;
+  }
+</style>
+
+<script define:vars={{ cfg, whatsappBase }}>
+  const form = document.getElementById('sim-form');
+  if (form) {
+    const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+    const pct = (n, casas = 2) => `${(n * 100).toFixed(casas).replace('.', ',')}%`;
+
+    const $ = (id) => document.getElementById(id);
+    const valorEl = $('sim-valor');
+    const prazoEl = $('sim-prazo');
+    const erroEl = $('sim-erro');
+    const ctaEl = $('sim-cta');
+
+    /**
+     * Tabela oficial do saque-aniversário do FGTS (Lei 13.932/2019):
+     * alíquota sobre o saldo mais uma parcela adicional fixa por faixa.
+     */
+    const FAIXAS_FGTS = [
+      [500, 0.5, 0],
+      [1000, 0.4, 50],
+      [5000, 0.3, 150],
+      [10000, 0.2, 650],
+      [15000, 0.15, 1150],
+      [20000, 0.1, 1900],
+      [Infinity, 0.05, 2900],
+    ];
+
+    const saqueAniversario = (saldo) => {
+      for (const [teto, aliquota, adicional] of FAIXAS_FGTS) {
+        if (saldo <= teto) return saldo * aliquota + adicional;
+      }
+      return 0;
+    };
+
+    /** Valor presente de uma série de parcelas iguais (Tabela Price). */
+    const valorPresente = (parcela, i, n) => (parcela * (1 - Math.pow(1 + i, -n))) / i;
+
+    const produtoAtivo = () => form.querySelector('input[name="produto"]:checked').value;
+
+    function montarPrazos() {
+      const p = produtoAtivo();
+      const opcoes =
+        p === 'fgts'
+          ? cfg.fgts.years.map((a) => ({ v: a, t: `${a} ${a === 1 ? 'saque anual' : 'saques anuais'}` }))
+          : cfg[p].months.map((m) => ({ v: m, t: `${m} meses` }));
+
+      prazoEl.innerHTML = '';
+      for (const o of opcoes) {
+        const opt = document.createElement('option');
+        opt.value = String(o.v);
+        opt.textContent = o.t;
+        prazoEl.append(opt);
+      }
+      // Escolhe um prazo do meio como padrão, que é o mais comum na prática.
+      prazoEl.selectedIndex = Math.floor(opcoes.length / 2);
+      $('sim-prazo-label').textContent = p === 'fgts' ? 'Quantos saques antecipar' : 'Em quantas parcelas';
+    }
+
+    function calcular() {
+      const p = produtoAtivo();
+      const conf = cfg[p];
+      const valor = Number(valorEl.value);
+      const prazo = Number(prazoEl.value);
+
+      $('sim-valor-label').textContent = conf.label;
+      $('sim-valor-hint').textContent = conf.hint;
+
+      if (!Number.isFinite(valor) || valor < 100) {
+        erroEl.textContent = 'Informe um valor a partir de R$ 100 para calcular.';
+        erroEl.classList.remove('hidden');
+        return;
+      }
+      erroEl.classList.add('hidden');
+
+      const i = conf.rate;
+      let destaque = 0;
+      let v1 = 0;
+      let v2 = 0;
+      let v3 = 0;
+
+      if (p === 'fgts') {
+        // Antecipar N saques equivale a trazer a valor presente cada saque futuro.
+        // O saldo cai a cada retirada e não consideramos depósitos futuros, o que
+        // torna a estimativa conservadora. O saque do ano k é descontado por 12k meses.
+        let saldo = valor;
+        let soma = 0;
+        for (let k = 1; k <= prazo; k++) {
+          const saque = Math.min(saqueAniversario(saldo), saldo);
+          if (saque <= 0) break;
+          destaque += saque / Math.pow(1 + i, 12 * k);
+          soma += saque;
+          saldo -= saque;
+        }
+        v1 = soma / prazo;
+        v2 = soma;
+        v3 = soma - destaque;
+
+        $('sim-destaque-label').textContent = 'Você pode receber hoje';
+        $('sim-l1').textContent = 'Média por saque';
+        $('sim-l2').textContent = 'Soma dos saques';
+        $('sim-l3').textContent = 'Custo da antecipação';
+      } else {
+        const parcela = valor * conf.margin;
+        destaque = valorPresente(parcela, i, prazo);
+        v1 = parcela;
+        v2 = parcela * prazo;
+        v3 = v2 - destaque;
+
+        $('sim-destaque-label').textContent = 'Crédito disponível';
+        $('sim-l1').textContent = 'Parcela mensal';
+        $('sim-l2').textContent = 'Total a pagar';
+        $('sim-l3').textContent = 'Custo do crédito';
+      }
+
+      $('sim-destaque').textContent = brl.format(destaque);
+      $('sim-v1').textContent = brl.format(v1);
+      $('sim-v2').textContent = brl.format(v2);
+      $('sim-v3').textContent = brl.format(v3);
+      $('sim-v4').textContent = `${pct(i)} a.m.`;
+
+      const nomes = { inss: 'consignado INSS', clt: 'consignado CLT', fgts: 'antecipação do FGTS' };
+      const prazoTexto = p === 'fgts' ? `${prazo} saques` : `${prazo} meses`;
+      const msg =
+        `Olá! Simulei ${nomes[p]} no site e gostaria de continuar.\n` +
+        `Valor informado: ${brl.format(valor)}\n` +
+        `Prazo: ${prazoTexto}\n` +
+        `Estimativa recebida: ${brl.format(destaque)}`;
+      ctaEl.href = `${whatsappBase}?text=${encodeURIComponent(msg)}`;
+    }
+
+    form.addEventListener('change', (e) => {
+      if (e.target.name === 'produto') montarPrazos();
+      calcular();
+    });
+    valorEl.addEventListener('input', calcular);
+
+    montarPrazos();
+    calcular();
+  }
+</script>

@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Steps from '../components/Steps.astro';
+import Simulador from '../components/Simulador.astro';
+import FeatureSplit from '../components/FeatureSplit.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+import heroFoto from '../assets/inss-senhor.jpg';
+import casalFoto from '../assets/inss-casal.jpg';
+
+const steps = [
+  {
+    icon: 'ph:calculator-fill',
+    title: 'Simule',
+    text: 'Informe o valor do benefício e o prazo. A parcela e o custo total aparecem na hora, sem cadastro.',
+  },
+  {
+    icon: 'ph:identification-card-fill',
+    title: 'Envie os documentos',
+    text: 'Documento com foto, comprovante de residência e o número do benefício. Tudo pelo celular.',
+  },
+  {
+    icon: 'ph:bank-fill',
+    title: 'Receba na conta',
+    text: 'Aprovado e assinado, o valor cai na conta informada, normalmente em até um dia útil.',
+  },
+];
+
+const faq = [
+  {
+    q: 'Quem pode contratar o consignado do INSS?',
+    a: 'Aposentados e pensionistas do INSS. Quem recebe BPC ou LOAS tem regras próprias e margem menor, e nem toda instituição opera essa modalidade.',
+  },
+  {
+    q: 'Existe um teto de juros?',
+    a: 'Sim. O Conselho Nacional de Previdência Social define o teto de taxa do consignado do INSS e revisa esse valor periodicamente. Nenhuma instituição pode cobrar acima dele.',
+  },
+  {
+    q: 'Qual é o prazo máximo?',
+    a: 'Até 84 meses. Prazo maior derruba a parcela mensal, mas aumenta o valor total pago no fim, porque os juros incidem por mais tempo.',
+  },
+  {
+    q: 'Posso ter mais de um contrato ao mesmo tempo?',
+    a: 'Pode, desde que a soma das parcelas caiba na margem de 30% do benefício. Os 5% restantes da margem total ficam reservados ao cartão consignado ou ao cartão benefício.',
+  },
+  {
+    q: 'O que é a portabilidade?',
+    a: 'É transferir um contrato que você já tem para outra instituição que ofereça juros menores. É um direito seu, não pode ser cobrado por isso e o banco atual não pode impedir.',
+  },
+];
+---
+
+<Base
+  title="Empréstimo consignado INSS"
+  description="Consignado para aposentados e pensionistas do INSS: teto de juros regulado, prazo de até 84 meses e simulação sem cadastro."
+>
+  <Hero
+    title="Consignado para quem recebe do INSS"
+    subtitle="Teto de juros regulado, até 84 meses e desconto direto no benefício. Simule sem informar CPF."
+    image={heroFoto}
+    imageAlt="Senhor de óculos sorrindo em um ambiente externo"
+    primaryHref="#simulador"
+    primaryLabel="Simular agora"
+    secondaryHref="#duvidas"
+    secondaryLabel="Tirar dúvidas"
+  />
+
+  <Steps heading="Do cálculo ao dinheiro na conta" steps={steps} />
+
+  <Simulador heading="Simule com o valor do seu benefício" />
+
+  <FeatureSplit
+    title="A margem de 35% não é toda para empréstimo"
+    text="A confusão mais comum do consignado está aqui. A margem total se divide, e usar tudo em um produto só bloqueia os outros."
+    bullets={[
+      '30% do benefício ficam disponíveis para empréstimo consignado',
+      '5% são reservados exclusivamente ao cartão consignado ou cartão benefício',
+      'Comprometer a margem inteira impede novas contratações até quitar',
+    ]}
+    image={casalFoto}
+    imageAlt="Casal de idosos caminhando de mãos dadas por uma passarela de madeira"
+    href="/simulador"
+    ctaLabel="Simular agora"
+  />
+
+  <div id="duvidas">
+    <Faq items={faq} heading="Dúvidas sobre o consignado do INSS" />
+  </div>
+
+  <CtaBand />
+</Base>

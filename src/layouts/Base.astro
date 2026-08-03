@@ -1,0 +1,83 @@
+---
+import { Font } from 'astro:assets';
+import { brand } from '../config/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Some pages want a tighter <title>; default appends the brand. */
+  bareTitle?: boolean;
+}
+
+const { title, description, bareTitle = false } = Astro.props;
+const fullTitle = bareTitle ? title : `${title} | ${brand.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com');
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:site_name" content={brand.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#c2410c" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    {/* Self-hosted. preload apenas nos pesos usados acima da dobra. */}
+    <Font cssVariable="--font-sora" preload />
+    <Font cssVariable="--font-figtree" preload />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: brand.name,
+        description: brand.description,
+        url: canonical.origin,
+        inLanguage: 'pt-BR',
+      })}
+    />
+  </head>
+
+  <body>
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+
+    <style>
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        z-index: 100;
+        background: var(--color-brand-600);
+        color: #fff;
+        padding: 0.875rem 1.25rem;
+        font-weight: 600;
+        border-bottom-right-radius: 0.75rem;
+      }
+
+      .skip-link:focus {
+        left: 0;
+      }
+    </style>
+  </body>
+</html>

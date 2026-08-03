@@ -1,0 +1,95 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+import Simulador from '../components/Simulador.astro';
+import Diferenciais from '../components/Diferenciais.astro';
+import Depoimentos from '../components/Depoimentos.astro';
+import FeatureSplit from '../components/FeatureSplit.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+import heroFoto from '../assets/hero-aposentada.jpg';
+import fgtsFoto from '../assets/fgts-trabalhadora.jpg';
+import inssFoto from '../assets/inss-casal.jpg';
+
+const faq = [
+  {
+    q: 'Preciso ter nome limpo para contratar?',
+    a: 'Não. No consignado a parcela é descontada direto do benefício ou da folha de pagamento, então a garantia não é o seu score de crédito. Estar negativado não impede a contratação.',
+  },
+  {
+    q: 'Quanto do meu benefício pode ir para a parcela?',
+    a: 'A margem consignável do INSS é de 35% no total: até 30% para empréstimo e mais 5% reservados ao cartão consignado ou cartão benefício. O simulador já respeita esse limite.',
+  },
+  {
+    q: 'Antecipar o FGTS tira meu direito à multa na demissão?',
+    a: 'Não. A multa rescisória de 40% continua sendo sua. O que muda é que, ao optar pelo saque-aniversário, você deixa de poder sacar o saldo integral caso seja demitido sem justa causa.',
+  },
+  {
+    q: 'Em quanto tempo o dinheiro cai na conta?',
+    a: 'Depois da aprovação e da assinatura do contrato, o pagamento costuma ser feito em até um dia útil. O prazo exato depende da instituição financeira que concede o crédito.',
+  },
+  {
+    q: 'Posso desistir depois de assinar?',
+    a: 'Pode. O Código de Defesa do Consumidor garante sete dias para desistir de contratos feitos fora do estabelecimento, como os digitais. Basta devolver o valor recebido com os encargos do período.',
+  },
+];
+---
+
+<Base
+  title="Consignado INSS, CLT e antecipação do FGTS"
+  description="Simule consignado para INSS e CLT ou antecipe o saque-aniversário do FGTS. A parcela aparece na tela antes de qualquer cadastro."
+>
+  <Hero
+    title="Consignado sem letra miúda"
+    subtitle="Para INSS, CLT e FGTS. Simule em 30 segundos e veja a parcela exata antes de decidir."
+    image={heroFoto}
+    imageAlt="Senhora sentada no sofá de casa, sorrindo enquanto usa o celular"
+    primaryHref="/simulador"
+    primaryLabel="Simular agora"
+    secondaryHref="#simulador"
+    secondaryLabel="Ver as taxas"
+  />
+
+  <ProductGrid />
+
+  <Simulador />
+
+  <Diferenciais />
+
+  <Depoimentos />
+
+  <FeatureSplit
+    title="Seu FGTS parado rende menos que a sua dívida"
+    text="Quem tem carteira assinada pode antecipar os próximos saques-aniversário e usar o dinheiro agora, em vez de esperar um ano por vez."
+    bullets={[
+      'O desconto sai do próprio FGTS, sem parcela no seu orçamento',
+      'Não entra na margem consignável, então não atrapalha outro crédito',
+      'A multa de 40% na demissão sem justa causa continua sendo sua',
+    ]}
+    image={fgtsFoto}
+    imageAlt="Trabalhadora sorrindo atrás do balcão de uma cafeteria"
+    href="/antecipacao-fgts"
+    ctaLabel="Ver como funciona"
+  />
+
+  <FeatureSplit
+    reverse
+    title="Aposentado e pensionista pagam menos juros"
+    text="O consignado do INSS tem teto de taxa definido pelo Conselho Nacional de Previdência Social, o que o torna o crédito mais barato disponível para quem recebe benefício."
+    bullets={[
+      'Teto de juros regulado, revisado periodicamente pelo CNPS',
+      'Prazo de até 84 meses para caber no orçamento',
+      'Portabilidade permitida a qualquer momento, sem custo',
+    ]}
+    image={inssFoto}
+    imageAlt="Casal de idosos caminhando de mãos dadas por uma passarela de madeira"
+    href="/consignado-inss"
+    ctaLabel="Ver condições do INSS"
+  />
+
+  <Faq items={faq} />
+
+  <CtaBand />
+</Base>

@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  /** Máximo 2 linhas no desktop. */
+  title: string;
+  /** Máximo 20 palavras. */
+  subtitle: string;
+  image: ImageMetadata;
+  imageAlt: string;
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+}
+
+const { title, subtitle, image, imageAlt, primaryHref, primaryLabel, secondaryHref, secondaryLabel } =
+  Astro.props;
+---
+
+<!--
+  Split assimétrico. O texto ocupa a coluna maior porque a mensagem é a
+  conversão; a foto entra como âncora emocional, não como protagonista.
+-->
+<section class="border-b border-line">
+  <div class="wrap grid items-center gap-10 py-12 md:py-16 lg:grid-cols-[1.12fr_0.88fr] lg:gap-14 lg:py-20">
+    <div>
+      <!--
+        Escala calculada para caber em 2 linhas no desktop. Título de hero em 3
+        linhas é erro de corpo de fonte, não de tamanho do texto: a esta largura
+        de coluna, 2,875rem comporta cerca de 22 caracteres por linha.
+      -->
+      <h1 class="font-display text-[2rem] leading-[1.08] sm:text-[2.5rem] lg:text-[2.875rem]">
+        {title}
+      </h1>
+      <p class="mt-5 max-w-[34ch] text-lg text-ink-soft sm:text-xl">
+        {subtitle}
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <a href={primaryHref} class="btn btn-primary">{primaryLabel}</a>
+        {secondaryHref && secondaryLabel && <a href={secondaryHref} class="btn btn-secondary">{secondaryLabel}</a>}
+      </div>
+    </div>
+
+    <div class="relative">
+      <Image
+        src={image}
+        alt={imageAlt}
+        widths={[480, 760, 1100]}
+        sizes="(min-width: 1024px) 46vw, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="aspect-[4/3] w-full rounded-3xl object-cover"
+      />
+    </div>
+  </div>
+</section>

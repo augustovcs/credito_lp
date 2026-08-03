@@ -1,0 +1,79 @@
+---
+import { Icon } from 'astro-icon/components';
+import { brand, contact, legal, nav, rates } from '../config/site';
+
+const produtos = nav.filter((n) => n.href !== '/simulador');
+const ano = 2026;
+---
+
+<footer class="mt-24 border-t border-line bg-surface-alt">
+  <div class="wrap py-14">
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.2fr]">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="grid size-9 place-items-center rounded-xl bg-brand-600 text-white">
+            <Icon name="ph:sun-horizon-fill" class="size-5" />
+          </span>
+          <span class="font-display text-xl font-bold tracking-tight">{brand.name}</span>
+        </div>
+        <p class="mt-4 max-w-sm text-ink-soft">{brand.description}</p>
+      </div>
+
+      <nav aria-label="Produtos">
+        <h2 class="font-display text-base font-bold">Produtos</h2>
+        <ul class="mt-4 space-y-3">
+          {
+            produtos.map((item) => (
+              <li>
+                <a href={item.href} class="text-ink-soft underline-offset-4 hover:text-brand-700 hover:underline">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a href="/simulador" class="text-ink-soft underline-offset-4 hover:text-brand-700 hover:underline">
+              Simulador
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="font-display text-base font-bold">Atendimento</h2>
+        <ul class="mt-4 space-y-3 text-ink-soft">
+          <li>Capitais: {contact.phoneCapitais}</li>
+          <li>Demais localidades: {contact.phoneOutras}</li>
+          <li>Ouvidoria: {contact.ouvidoria}</li>
+          <li>{contact.hours}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!--
+      Bloco legal. Num produto de crédito regulado nada aqui é opcional:
+      correspondente bancário precisa identificar a instituição financeira
+      parceira e divulgar faixa de taxas e prazos (Res. CMN 4.935/2021 e
+      Res. CMN 5.061/2022). Enquanto houver [PLACEHOLDER] nesta seção,
+      a página NÃO está apta a ir ao ar.
+    -->
+    <div class="mt-12 border-t border-line pt-8 text-sm leading-relaxed text-ink-soft">
+      <p>
+        {brand.legalName}, inscrita no CNPJ sob o nº {legal.cnpj}, com sede em {legal.address}.
+        Atua como correspondente bancário, nos termos da Resolução CMN nº 4.935/2021, da instituição
+        financeira {legal.partnerBank}, responsável pela concessão do crédito.
+      </p>
+      <p class="mt-4">
+        Operações de crédito consignado com prazos de {rates.inss.minMonths} a {rates.inss.maxMonths} meses
+        e taxas de juros a partir de {(rates.inss.monthlyRate * 100).toFixed(2).replace('.', ',')}% ao mês.
+        O Custo Efetivo Total (CET) de cada operação é informado na proposta antes da contratação e varia
+        conforme prazo, valor e perfil. A concessão está sujeita a análise e aprovação.
+      </p>
+      <p class="mt-4">
+        As simulações apresentadas neste site são estimativas de caráter informativo, calculadas no seu
+        próprio navegador, e não constituem proposta, promessa ou garantia de crédito.
+      </p>
+      <p class="mt-6 text-ink-soft">© {ano} {brand.name}. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>

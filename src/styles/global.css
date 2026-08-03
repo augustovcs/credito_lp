@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+   Paleta: laranja profundo + grafite quente. Todos os pares de cor abaixo
+   foram conferidos contra WCAG AA. Os valores de contraste estao anotados
+   porque laranja e uma cor traicoeira: o tom vivo reprova como fundo de texto.
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Acao. brand-600 e o unico laranja que pode receber texto branco. */
+  --color-brand-50: #fff7ed;
+  --color-brand-100: #ffedd5;
+  --color-brand-200: #fed7aa;
+  --color-brand-500: #ea580c; /* 3.56:1 no branco -> so icone, numero display, fill grande */
+  --color-brand-600: #c2410c; /* 5.18:1 com texto branco -> botao primario, link de acao */
+  --color-brand-700: #9a3412; /* 7.31:1 no branco -> hover */
+
+  /* Neutros quentes */
+  --color-ink: #1c1917; /* ~16:1 no branco -> texto corrente */
+  --color-ink-soft: #57534e; /* 7.63:1 no branco -> texto secundario */
+  --color-surface: #ffffff;
+  --color-surface-alt: #fafaf9;
+  --color-line: #e7e5e4;
+
+  /* Tipografia. As variaveis --font-sora e --font-figtree sao emitidas pela
+     API de fontes do Astro; aqui elas so ganham nomes semanticos. */
+  --font-display: var(--font-sora);
+  --font-body: var(--font-figtree);
+
+  /* Raio unico para o projeto inteiro (shape consistency lock) */
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+@layer base {
+  html {
+    /* 18px de base: o publico principal e 60+, entao subimos do minimo de 16px */
+    font-size: 112.5%;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background-color: var(--color-surface);
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Foco visivel e obrigatorio. Nunca remover o anel. */
+  :focus-visible {
+    outline: 3px solid var(--color-brand-600);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Numeros tabulares em valores monetarios evitam o texto "pulando"
+     enquanto o simulador recalcula. */
+  [data-tabular] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Componentes
+   Poucas classes, só o que repete em toda página. Raio e cor vêm dos tokens.
+   --------------------------------------------------------------------------- */
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    /* 52px de altura: acima do mínimo de 44px para alvo de toque */
+    min-height: 3.25rem;
+    padding-inline: 1.5rem;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-align: center;
+    /* Rótulo de CTA nunca quebra em duas linhas */
+    white-space: nowrap;
+    transition:
+      background-color 180ms ease-out,
+      color 180ms ease-out,
+      border-color 180ms ease-out,
+      transform 120ms ease-out;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  /* brand-600 sobre branco: 5.18:1. O brand-500 reprovaria AA aqui. */
+  .btn-primary {
+    background-color: var(--color-brand-600);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-brand-700);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--color-brand-600);
+    border: 2px solid var(--color-brand-600);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-brand-50);
+    color: var(--color-brand-700);
+    border-color: var(--color-brand-700);
+  }
+
+  /* Variante para uso sobre fundo laranja escuro */
+  .btn-on-brand {
+    background-color: #fff;
+    color: var(--color-brand-700);
+  }
+
+  .btn-on-brand:hover {
+    background-color: var(--color-brand-50);
+  }
+
+  .card {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-line);
+    background-color: var(--color-surface);
+  }
+
+  .field-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .field-input {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid var(--color-line);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 1.0625rem;
+    font-family: inherit;
+  }
+
+  .field-input::placeholder {
+    /* ink-soft tem 7.63:1 no branco, bem acima do mínimo para placeholder */
+    color: var(--color-ink-soft);
+    opacity: 1;
+  }
+
+  .field-input:hover {
+    border-color: #d6d3d1;
+  }
+
+  .field-input:user-invalid {
+    border-color: #b91c1c;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reveal on scroll
+   CSS puro via scroll-driven animations: zero JS, zero biblioteca.
+   Onde o navegador nao suporta, o elemento simplesmente aparece.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 26%;
+    }
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Desliga qualquer transicao/animacao para quem pediu menos movimento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  title: string;
+  text: string;
+  bullets: readonly string[];
+  image: ImageMetadata;
+  imageAlt: string;
+  href: string;
+  ctaLabel: string;
+  /** Inverte a ordem para alternar a composição entre duas seções seguidas. */
+  reverse?: boolean;
+}
+
+const { title, text, bullets, image, imageAlt, href, ctaLabel, reverse = false } = Astro.props;
+---
+
+<section class="wrap py-16 md:py-24">
+  <div class="reveal grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <div class:list={[reverse && 'lg:order-2']}>
+      <h2 class="max-w-[18ch] font-display text-3xl sm:text-4xl">{title}</h2>
+      <p class="mt-5 max-w-[50ch] text-lg text-ink-soft">{text}</p>
+
+      <ul class="mt-7 space-y-3">
+        {
+          bullets.map((b) => (
+            <li class="flex gap-3">
+              <Icon name="ph:check-circle-fill" class="mt-1 size-5 shrink-0 text-brand-600" />
+              <span>{b}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a href={href} class="btn btn-primary mt-8">{ctaLabel}</a>
+    </div>
+
+    <div class:list={[reverse && 'lg:order-1']}>
+      <Image
+        src={image}
+        alt={imageAlt}
+        widths={[520, 820]}
+        sizes="(min-width: 1024px) 46vw, 100vw"
+        loading="lazy"
+        class="aspect-[5/4] w-full rounded-3xl object-cover"
+      />
+    </div>
+  </div>
+</section>

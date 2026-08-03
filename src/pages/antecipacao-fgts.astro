@@ -1,0 +1,131 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Simulador from '../components/Simulador.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+import heroFoto from '../assets/fgts-trabalhadora.jpg';
+
+/** Tabela do saque-aniversário conforme a Lei 13.932/2019. */
+const faixas = [
+  { saldo: 'Até R$ 500,00', aliquota: '50%', adicional: null },
+  { saldo: 'De R$ 500,01 a R$ 1.000,00', aliquota: '40%', adicional: 'R$ 50,00' },
+  { saldo: 'De R$ 1.000,01 a R$ 5.000,00', aliquota: '30%', adicional: 'R$ 150,00' },
+  { saldo: 'De R$ 5.000,01 a R$ 10.000,00', aliquota: '20%', adicional: 'R$ 650,00' },
+  { saldo: 'De R$ 10.000,01 a R$ 15.000,00', aliquota: '15%', adicional: 'R$ 1.150,00' },
+  { saldo: 'De R$ 15.000,01 a R$ 20.000,00', aliquota: '10%', adicional: 'R$ 1.900,00' },
+  { saldo: 'Acima de R$ 20.000,00', aliquota: '5%', adicional: 'R$ 2.900,00' },
+];
+
+const steps = [
+  {
+    icon: 'ph:toggle-right-fill',
+    title: 'Troque para saque-aniversário',
+    text: 'A mudança é feita no app do FGTS. Só quem está nessa modalidade pode antecipar.',
+  },
+  {
+    icon: 'ph:calculator-fill',
+    title: 'Simule quantos saques quer',
+    text: 'Você escolhe de um a cinco saques futuros. Quanto mais anos, maior o desconto aplicado.',
+  },
+  {
+    icon: 'ph:bank-fill',
+    title: 'Autorize e receba',
+    text: 'Depois da autorização no app do FGTS, o valor cai na sua conta, normalmente no mesmo dia.',
+  },
+];
+
+const faq = [
+  {
+    q: 'Qual a diferença entre saque-rescisão e saque-aniversário?',
+    a: 'No saque-rescisão você só acessa o FGTS ao ser demitido sem justa causa, mas retira o saldo inteiro. No saque-aniversário você retira uma parte todo ano, no mês do seu aniversário, e perde o direito de sacar o saldo total em caso de demissão.',
+  },
+  {
+    q: 'Perco a multa de 40% se aderir?',
+    a: 'Não. A multa rescisória de 40% continua sendo depositada e liberada normalmente em caso de demissão sem justa causa. O que fica retido na conta do FGTS é apenas o saldo principal.',
+  },
+  {
+    q: 'Posso voltar atrás depois de aderir?',
+    a: 'Pode, mas a mudança de volta para o saque-rescisão só passa a valer depois de 25 meses. Enquanto houver antecipação em aberto, a alteração fica bloqueada.',
+  },
+  {
+    q: 'A parcela desconta do meu salário?',
+    a: 'Não desconta nada do salário. O pagamento acontece direto na conta do FGTS: todo ano, no seu mês de aniversário, o valor antecipado é abatido em vez de ser liberado para você.',
+  },
+  {
+    q: 'Preciso ter nome limpo?',
+    a: 'Não. A garantia da operação é o próprio saldo do FGTS que já está reservado, e não a sua situação no cadastro de crédito.',
+  },
+];
+---
+
+<Base
+  title="Antecipação do saque-aniversário do FGTS"
+  description="Receba hoje até cinco saques-aniversário do FGTS. Sem desconto no salário, sem consulta ao score e com simulação na hora."
+>
+  <Hero
+    title="Seu FGTS não precisa esperar um ano"
+    subtitle="Antecipe até cinco saques futuros e receba hoje. Sem desconto no salário e sem consulta ao score."
+    image={heroFoto}
+    imageAlt="Trabalhadora sorrindo atrás do balcão de uma cafeteria"
+    primaryHref="#simulador"
+    primaryLabel="Simular agora"
+    secondaryHref="#tabela"
+    secondaryLabel="Ver a tabela"
+  />
+
+  <!-- Tabela legal de verdade, não uma ficha técnica inventada -->
+  <section id="tabela" class="wrap scroll-mt-20 py-16 md:py-24">
+    <h2 class="max-w-[24ch] font-display text-3xl sm:text-4xl">
+      Quanto do seu saldo sai a cada ano
+    </h2>
+    <p class="mt-5 max-w-[58ch] text-lg text-ink-soft">
+      O valor do saque-aniversário não é escolhido pelo banco. Ele vem de uma tabela fixa em lei:
+      uma alíquota sobre o saldo mais uma parcela adicional, conforme a faixa.
+    </p>
+
+    <div class="mt-8 overflow-x-auto rounded-2xl border border-line">
+      <table class="w-full min-w-[34rem] border-collapse text-left">
+        <caption class="sr-only">
+          Alíquotas e parcelas adicionais do saque-aniversário do FGTS por faixa de saldo
+        </caption>
+        <thead>
+          <tr class="bg-surface-alt">
+            <th scope="col" class="px-5 py-4 font-display text-[0.9375rem]">Saldo na conta</th>
+            <th scope="col" class="px-5 py-4 font-display text-[0.9375rem]">Alíquota</th>
+            <th scope="col" class="px-5 py-4 font-display text-[0.9375rem]">Parcela adicional</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            faixas.map((f, i) => (
+              <tr class:list={[i % 2 === 1 && 'bg-surface-alt/60']}>
+                <td class="px-5 py-4">{f.saldo}</td>
+                <td class="px-5 py-4 font-semibold" data-tabular>
+                  {f.aliquota}
+                </td>
+                <td class="px-5 py-4 text-ink-soft" data-tabular>
+                  {f.adicional ?? 'Não há'}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-4 text-sm text-ink-soft">
+      Fonte: Lei nº 13.932/2019. O simulador abaixo usa exatamente esta tabela.
+    </p>
+  </section>
+
+  <Simulador heading="Simule com o saldo do seu FGTS" />
+
+  <Steps heading="O caminho até o dinheiro cair" steps={steps} />
+
+  <Faq items={faq} heading="Dúvidas sobre a antecipação" />
+
+  <CtaBand />
+</Base>

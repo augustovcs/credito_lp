@@ -1,0 +1,149 @@
+---
+import { Icon } from 'astro-icon/components';
+import { contact } from '../config/site';
+
+const whatsapp = `https://wa.me/${contact.whatsapp}`;
+---
+
+<section class="bg-brand-600 py-16 text-white md:py-24">
+  <div class="wrap grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
+    <div>
+      <h2 class="max-w-[16ch] font-display text-3xl sm:text-4xl">Prefere que a gente te procure?</h2>
+      <!-- Branco puro: sobre o brand-600, qualquer opacidade abaixo de 100% reprova AA. -->
+      <p class="mt-5 max-w-[44ch] text-lg text-white">
+        Deixe seu contato e um atendente retorna no horário que você escolher. Sem robô e sem
+        transferir você de setor.
+      </p>
+
+      <div class="mt-8 space-y-4 border-t border-white/20 pt-8">
+        <p class="flex items-center gap-3">
+          <Icon name="ph:clock-fill" class="size-5 shrink-0" />
+          {contact.hours}
+        </p>
+        <p class="flex items-center gap-3">
+          <Icon name="ph:phone-fill" class="size-5 shrink-0" />
+          Capitais {contact.phoneCapitais}
+        </p>
+      </div>
+
+      <a href={whatsapp} class="btn btn-on-brand mt-8">
+        <Icon name="ph:whatsapp-logo-fill" class="size-5" />
+        Falar no WhatsApp
+      </a>
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 text-ink md:p-8">
+      <form id="contato-form" novalidate>
+        <div>
+          <label class="field-label" for="c-nome">Nome completo</label>
+          <input
+            type="text"
+            id="c-nome"
+            name="nome"
+            class="field-input"
+            required
+            minlength="3"
+            autocomplete="name"
+            aria-describedby="c-nome-erro"
+          />
+          <p id="c-nome-erro" class="erro mt-2 hidden text-sm font-medium text-red-700"></p>
+        </div>
+
+        <div class="mt-5">
+          <label class="field-label" for="c-tel">Telefone com DDD</label>
+          <input
+            type="tel"
+            id="c-tel"
+            name="telefone"
+            class="field-input"
+            required
+            inputmode="tel"
+            autocomplete="tel-national"
+            placeholder="11 91234 5678"
+            pattern="[0-9()\-\s]{10,20}"
+            aria-describedby="c-tel-erro"
+          />
+          <p id="c-tel-erro" class="erro mt-2 hidden text-sm font-medium text-red-700"></p>
+        </div>
+
+        <div class="mt-5">
+          <label class="field-label" for="c-produto">O que você procura</label>
+          <select id="c-produto" name="produto" class="field-input" required>
+            <option value="inss">Consignado INSS</option>
+            <option value="clt">Consignado CLT</option>
+            <option value="fgts">Antecipação do FGTS</option>
+            <option value="portabilidade">Portabilidade</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-7 w-full">Pedir contato</button>
+
+        <p id="contato-ok" class="mt-5 hidden rounded-xl bg-brand-50 p-4 text-[0.9375rem]" role="status"></p>
+
+        <p class="mt-5 text-sm leading-relaxed text-ink-soft">
+          Demonstração: este formulário valida os campos mas não envia, não armazena e não
+          compartilha nada. Nenhum dado sai do seu navegador.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('contato-form') as HTMLFormElement | null;
+
+  if (form) {
+    const ok = document.getElementById('contato-ok')!;
+
+    /** Mensagem por campo: erro genérico do navegador não diz como corrigir. */
+    const mensagens: Record<string, (el: HTMLInputElement) => string> = {
+      nome: (el) =>
+        el.validity.valueMissing ? 'Escreva seu nome completo.' : 'O nome precisa ter ao menos 3 letras.',
+      telefone: (el) =>
+        el.validity.valueMissing
+          ? 'Informe um telefone com DDD.'
+          : 'Use apenas números, com DDD. Exemplo: 11 91234 5678.',
+    };
+
+    function validaCampo(el: HTMLInputElement): boolean {
+      const alvo = document.getElementById(`${el.id}-erro`);
+      if (!alvo) return el.checkValidity();
+
+      if (el.checkValidity()) {
+        alvo.classList.add('hidden');
+        alvo.textContent = '';
+        el.removeAttribute('aria-invalid');
+        return true;
+      }
+
+      alvo.textContent = mensagens[el.name]?.(el) ?? 'Confira este campo.';
+      alvo.classList.remove('hidden');
+      el.setAttribute('aria-invalid', 'true');
+      return false;
+    }
+
+    // Valida ao sair do campo, não a cada tecla: corrigir alguém no meio da
+    // digitação é ruído, não ajuda.
+    for (const el of form.querySelectorAll<HTMLInputElement>('input')) {
+      el.addEventListener('blur', () => validaCampo(el));
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const campos = [...form.querySelectorAll<HTMLInputElement>('input')];
+      const invalidos = campos.filter((el) => !validaCampo(el));
+
+      if (invalidos.length > 0) {
+        ok.classList.add('hidden');
+        invalidos[0]!.focus();
+        return;
+      }
+
+      const nome = (form.elements.namedItem('nome') as HTMLInputElement).value.trim().split(' ')[0];
+      ok.textContent = `Tudo certo, ${nome}. Numa versão publicada, o pedido de contato seria enviado agora.`;
+      ok.classList.remove('hidden');
+      form.reset();
+    });
+  }
+</script>

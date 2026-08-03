@@ -1,0 +1,58 @@
+name: Deploy
+
+# Site estático (Astro output: 'static'). Builda no runner e manda só o dist/
+# para o caminho que o Caddy serve com file_server. A VPS não precisa de Node.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  # Precisa bater com o `root *` do bloco no Caddyfile.
+  DEPLOY_PATH: /srv/apps/credito
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Configurar SSH
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          HOST: ${{ secrets.VPS_HOST }}
+          PORT: ${{ secrets.VPS_PORT || 22 }}
+        run: |
+          mkdir -p ~/.ssh
+          # heredoc em vez de echo: se o secret não terminar em quebra de linha,
+          # o echo gera uma chave que o ssh recusa sem dizer o motivo.
+          cat <<< "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -p "$PORT" -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Enviar build para a VPS
+        env:
+          PORT: ${{ secrets.VPS_PORT || 22 }}
+        run: |
+          # A barra final em dist/ é obrigatória: sem ela o rsync cria
+          # $DEPLOY_PATH/dist e o Caddy passa a servir 404.
+          # O --delete limpa os assets com hash de builds anteriores, que o
+          # Astro renomeia a cada build e nunca somem sozinhos. Por isso nada
+          # deve ser colocado à mão dentro dessa pasta.
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_deploy -p $PORT" \
+            dist/ \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${DEPLOY_PATH}/"

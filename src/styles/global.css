@@ -206,7 +206,13 @@
     .reveal {
       animation: reveal-in linear both;
       animation-timeline: view();
-      animation-range: entry 8% cover 26%;
+      /*
+        O range termina cedo, ainda dentro da fase de entrada. A fase `entry`
+        dura o tanto que o elemento leva para entrar inteiro na viewport: num
+        bento alto ela se estende por mais de mil pixels de rolagem. Terminar em
+        `cover` deixaria o conteúdo alto invisível durante quase toda a leitura.
+      */
+      animation-range: entry 0% entry 22%;
     }
   }
 }
